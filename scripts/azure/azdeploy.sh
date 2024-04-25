@@ -10,20 +10,20 @@ az group create --name $resourceGroupName --location $location
 
 # Deploy virtual network
 echo "Creating VNET"
-az group deployment create --resource-group $resourceGroupName --template-file vnet.json
+az deployment group create --resource-group $resourceGroupName --template-file vnet.json
 
 # Wait for deployment to finish
-az group deployment wait --resource-group $resourceGroupName --name deployment0 --timeout 1800
+az deployment group wait --resource-group $resourceGroupName --name deployment0 --timeout 1800
 
 # Get subnet ID
 subnetId=$(az network vnet subnet show --resource-group $resourceGroupName --vnet-name MyVNET --name MySubnet --query id --output tsv)
 
 # Deploy virtual machine
 echo "Deploying VM"
-az group deployment create --resource-group $resourceGroupName --template-file vm.json --parameters subnetId=$subnetId 
+az deployment group create --resource-group $resourceGroupName --template-file vm.json --parameters subnetId=$subnetId 
 
 # Wait for deployment to finish
-az group deployment wait --resource-group $resourceGroupName --name deployment1 --timeout 1800
+az deployment group wait --resource-group $resourceGroupName --name deployment1 --timeout 1800
 
 
 #Install libraries using a custom script extension
