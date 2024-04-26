@@ -32,12 +32,16 @@ script=$(base64 -w0 install-libraries.sh)
 vmName="MyVM"
 az vm extension set --resource-group $resourceGroupName --vm-name $vmName --name customScript --publisher Microsoft.Azure.Extensions --version 2.1 --settings "{\"script\": \"$script\"}"
 
-storageAccountName="mystorageaccount$(date +%s | sha256sum | base64 | head -c 16)"
+declare -l storageAccountName
+storageAccountName="mystorageaccount$(date +%s | sha256sum | base64 | head -c 8)"
 
-az storage account create --name $mystorageaccount --resource-group $resourceGroupName --location $location --sku Standard_LRS --allow-blob-public-access true
+echo "Creating Storage Account"
+az storage account create --name $storageAccountName --resource-group $resourceGroupName --location $location --sku Standard_LRS --allow-blob-public-access true
 
-az storage container create --name mycontainer --account-name $mystorageaccount
+echo "Creating Storage Container"
+az storage container create --name mycontainer --account-name $storageAccountName
 
-az storage container set-permission --name mycontainer --public-access blob --account-name $mystorageaccount
+echo "Setting Storage Permissions"
+az storage container set-permission --name mycontainer --public-access blob --account-name $storageAccountName
 
 echo "Deployment and library installation completed."
